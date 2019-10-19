@@ -150,7 +150,7 @@
     <group delimiter=", ">
       <text variable="publisher"/>
       <choose>
-        <if type="patent">
+        <if type="patent article-newspaper">
           <date variable="issued">
             <date-part name="year"/>
             <date-part name="month" form="numeric-leading-zeros" prefix="-"/>
