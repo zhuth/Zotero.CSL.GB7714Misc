@@ -17,7 +17,7 @@
     <category field="generic-base"/>
     <category field="science"/>
     <summary>This style just partly implemented what the Chinese GB/T 7714-1987 requires.</summary>
-    <updated>2019-09-21T08:51:40+08:00</updated>
+    <updated>2019-09-15T21:20:55+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -78,6 +78,9 @@
       <if type="report">
         <text macro="title" suffix="[R]. "/>
       </if>
+      <else-if type="article-newspaper">
+        <text macro="title" suffix="[N]. "/>
+      </else-if>
       <else-if type="thesis">
         <text macro="title" suffix="[D]. "/>
       </else-if>
@@ -91,7 +94,7 @@
       <else-if type="paper-conference">
         <text macro="title" suffix="[A]. "/>
       </else-if>
-      <else-if type="chapter paper-conference" match="any">
+      <else-if type="chapter chapter-book paper-conference" match="any">
         <text macro="title" suffix="[A]. "/>
         <text term="in" />
       </else-if>
