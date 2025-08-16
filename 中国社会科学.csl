@@ -2,9 +2,9 @@
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.0" initialize="false" initialize-with=". " page-range-format="expanded" default-locale="en-US">
   <info>
     <title>中国社会科学</title>
-    <id>https://www.zotero-chinese.com/styles/中国社会科学</id>
+    <id>https://github.com/zhuth/CSL-Chinese-CSSCI-Journals/blob/main/%E4%B8%AD%E5%9B%BD%E7%A4%BE%E4%BC%9A%E7%A7%91%E5%AD%A6.csl</id>
     <link href="https://www.zotero-chinese.com/styles/中国社会科学" rel="self"/>
-    <link href="http://sscp.cssn.cn/tgxt/zgshkxtg/" rel="documentation"/>
+    <link href="http://sscp.cssn.cn/tgxt/" rel="documentation"/>
     <author>
       <name>Edward Zhou</name>
       <email>edwardzhoujiaxi@gmail.com</email>
@@ -13,10 +13,14 @@
       <name>Zeping Lee</name>
       <email>zepinglee@gmail.com</email>
     </contributor>
+    <contributor>
+      <name>zhuth</name>
+      <email>zhuth@live.cn</email>
+    </contributor>
     <category citation-format="note"/>
     <category field="social_science"/>
     <issn>1002-4921</issn>
-    <updated>2024-12-25T19:01:19+08:00</updated>
+    <updated>2025-05-17T19:01:19+08:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -24,6 +28,12 @@
       <!-- 英文页码的连接号使用 hyphen -->
       <term name="page-range-delimiter">-</term>
       <term name="translator" form="short">trans.</term>
+    </terms>
+  </locale>
+  <locale xml:lang="de">
+    <terms>
+      <term name="editor" form="short">Hrsg.</term>
+      <term name="page" form="short">S.</term>
     </terms>
   </locale>
   <locale xml:lang="zh">
@@ -56,8 +66,8 @@
       <term name="close-inner-quote">』</term>
       <!-- 日文页码的连接号根据习惯可能使用ハイフン等，这里假设使用ハイフン -->
       <term name="page-range-delimiter">-</term>
-      <term name="page" form="short">頁</term>
       <term name="issue" form="short">号</term>
+      <term name="volume" form="short">巻</term>
       <term name="editor" form="short">編集</term>
       <term name="compiler" form="short">編纂</term>
     </terms>
@@ -245,10 +255,14 @@
   </macro>
   <macro name="date-en">
     <choose>
-      <if type="collection manuscript personal_communication" match="any">
-        <date variable="issued" form="text"/>
+      <if type="collection manuscript personal_communication post post-weblog software webpage" match="any">        
+        <date variable="issued">
+          <date-part name="year" range-delimiter="/" suffix="-" />
+          <date-part name="month" suffix="-" form="numeric-leading-zeros" />
+          <date-part name="day" range-delimiter="~" form="numeric-leading-zeros" />
+        </date>
       </if>
-      <else-if type="article-journal article-magazine article-newspaper" match="any">
+      <else-if type="article-journal article-magazine" match="any">
         <date variable="issued" form="text" date-parts="year-month" prefix="(" suffix=")"/>
       </else-if>
       <else>
@@ -271,9 +285,9 @@
       <else-if type="article-newspaper" variable="original-date" match="all">
         <text macro="original-date-zh"/>
       </else-if>
-      <else-if type="classic post post-weblog software webpage" match="none">
-        <text term="no date"/>
-      </else-if>
+      <else>
+        <date variable="issued" form="text" date-parts="year"/>
+      </else>
     </choose>
   </macro>
   <macro name="issue-zh">
@@ -521,9 +535,13 @@
   <macro name="access-en">
     <choose>
       <if type="post post-weblog software webpage" match="any">
-        <group delimiter="，">
+        <group delimiter=", ">
           <text variable="URL"/>
-          <date variable="accessed" form="text"/>
+          <date variable="accessed">
+            <date-part name="year" range-delimiter="/" suffix="-" prefix="accessed on " />
+            <date-part name="month" suffix="-" form="numeric-leading-zeros" />
+            <date-part name="day" range-delimiter="~" form="numeric-leading-zeros" />
+          </date>
         </group>
       </if>
     </choose>
@@ -533,7 +551,7 @@
       <if type="post post-weblog software webpage" match="any">
         <group delimiter="，">
           <text variable="URL"/>
-          <date variable="accessed" form="text"/>
+          <date variable="accessed" form="text" prefix="访问于" />
         </group>
       </if>
     </choose>
@@ -613,9 +631,9 @@
       <if variable="locator">
         <text macro="locator-zh"/>
       </if>
-      <else-if type="article-journal article-magazine" match="none">
+      <else>
         <text macro="page-zh"/>
-      </else-if>
+      </else>
     </choose>
   </macro>
   <macro name="source-en">
@@ -728,7 +746,7 @@
       </if>
       <else>
         <!-- 再次引证时的项目简化 -->
-        <group delimiter=": ">
+        <group delimiter=", ">
           <text macro="author-en"/>
           <group delimiter=", ">
             <text macro="title-short-en"/>
@@ -737,7 +755,7 @@
                 <text macro="container-booklike-short-en"/>
               </if>
             </choose>
-            <text macro="locator-en"/>
+            <text macro="locator-or-page-en"/>
           </group>
         </group>
       </else>
@@ -778,8 +796,9 @@
   <macro name="volume-ja">
     <choose>
       <if is-numeric="volume">
-        <label variable="volume" form="short"/>
+        <text value="第"/>
         <number variable="volume"/>
+        <label variable="volume" form="short"/>
       </if>
       <else>
         <text variable="volume"/>
@@ -860,7 +879,14 @@
     </choose>
   </macro>
   <macro name="title-short-ja">
-    <text variable="title" form="short" prefix="「" suffix="」"/>
+    <choose>
+      <if type="book">
+        <text variable="title" form="short" prefix="『" suffix="』"/>
+      </if>
+      <else>
+        <text variable="title" form="short" prefix="「" suffix="」"/>
+      </else>
+    </choose>
   </macro>
   <macro name="translator-ja">
     <names variable="translator">
@@ -901,12 +927,12 @@
     </choose>
   </macro>
   <macro name="container-periodical-ja">
-    <text variable="container-title" prefix="『" suffix="』"/> <!-- 日文常用「」表示期刊名 -->
+    <text variable="container-title" prefix="『" suffix="』"/>
     <text variable="section" prefix="（" suffix="）"/>
     <text variable="publisher-place" prefix="（" suffix="）"/>
     <choose>
       <if variable="volume">
-        <group delimiter="，">
+        <group delimiter="、">
           <group>
             <text macro="volume-ja"/>
             <text macro="issue-ja"/>
@@ -921,7 +947,7 @@
     </choose>
   </macro>
   <macro name="container-newspaper-ja">
-    <text variable="container-title" prefix="「" suffix="」"/>
+    <text variable="container-title" prefix="『" suffix="』"/>
     <text variable="publisher-place" prefix="（" suffix="）"/>
     <group delimiter="，">
       <group>
@@ -933,7 +959,7 @@
     </group>
   </macro>
   <macro name="container-booklike-ja">
-    <group delimiter="：">
+    <group delimiter="、">
       <names variable="editor">
         <name delimiter="、"/>
         <label form="short"/>
@@ -995,7 +1021,7 @@
   <macro name="event-ja">
     <choose>
       <if variable="container-title" match="none">
-        <group delimiter="，">
+        <group delimiter="、">
           <group>
             <text variable="event-title"/>
             <text value="論文"/>
@@ -1021,7 +1047,7 @@
     </choose>
   </macro>
   <macro name="archive-ja">
-    <group delimiter="，">
+    <group delimiter="、">
       <group>
         <text variable="archive_collection"/>
         <!-- 档案的卷宗号 -->
@@ -1036,36 +1062,37 @@
   <macro name="access-ja">
     <choose>
       <if type="post post-weblog software webpage" match="any">
-        <group delimiter="，">
+        <group delimiter="、">
           <text variable="URL"/>
-          <date variable="accessed" form="text"/>
+          <date variable="accessed" form="text" prefix="閲覧：" />
         </group>
       </if>
     </choose>
   </macro>
   <macro name="page-ja">
-    <text value="第"/>
-    <number variable="page"/>
     <choose>
       <if type="article-newspaper">
+        <text value="第"/>
+        <number variable="page"/>
         <text value="版"/>
       </if>
       <else>
-        <label variable="page" form="short"/>
+        <label variable="page" form="short" suffix=" "/>
+        <number variable="page"/>
       </else>
     </choose>
   </macro>
   <macro name="locator-ja">
     <choose>
       <if is-numeric="locator">
-        <text value="第"/>
-        <number variable="locator"/>
         <choose>
           <if type="article-newspaper" locator="page" match="all">
-            <text value="版"/>
+            <number variable="locator"/>
+            <text value="面"/>
           </if>
           <else>
             <label variable="locator" form="short"/>
+            <number variable="locator"/>
           </else>
         </choose>
       </if>
@@ -1079,15 +1106,15 @@
       <if variable="locator">
         <text macro="locator-ja"/>
       </if>
-      <else-if type="article-journal article-magazine" match="none">
+      <else>
         <text macro="page-ja"/>
-      </else-if>
+      </else>
     </choose>
   </macro>
   <macro name="source-ja">
-    <group delimiter="：">
+    <group delimiter="、">
       <text macro="author-ja"/>
-      <group delimiter="，">
+      <group delimiter="、">
         <text macro="title-ja"/>
         <text macro="translator-ja"/>
         <choose>
@@ -1148,9 +1175,9 @@
       </if>
       <else>
         <!-- 再次引证时的项目简化 -->
-        <group delimiter="：">
+        <group delimiter="、">
           <text macro="author-ja"/>
-          <group delimiter="，">
+          <group delimiter="、">
             <text macro="title-short-ja"/>
             <choose>
               <if type="chapter paper-conference" match="any">
@@ -1167,8 +1194,11 @@
     <layout delimiter="；" suffix="。" locale="zh">
       <text macro="entry-layout-zh"/>
     </layout>
-    <layout delimiter="，" suffix="。" locale="ja">
+    <layout delimiter="；" suffix="。" locale="ja">
       <text macro="entry-layout-ja"/>
+    </layout>
+    <layout delimiter="; " suffix="." locale="de">
+      <text macro="entry-layout-en"/>
     </layout>
     <layout delimiter="; " suffix=".">
       <text macro="entry-layout-en"/>
@@ -1182,6 +1212,10 @@
     <layout locale="ja">
       <text variable="citation-number" prefix="[" suffix="]"/>
       <text macro="source-ja" suffix="。"/>
+    </layout>
+    <layout locale="de">
+      <text variable="citation-number" prefix="[" suffix="]"/>
+      <text macro="source-en" suffix="."/>
     </layout>
     <layout>
       <text variable="citation-number" prefix="[" suffix="]"/>
